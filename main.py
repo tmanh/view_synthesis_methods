@@ -3,7 +3,7 @@ import time
 
 from ibr.ibr import IBR
 
-depth = cv2.imread('/Users/anhtruong/Downloads/LR/3.5x3.5/114_x[3.5, 3.5]_SR.png')
+depth = cv2.imread('/ipi/scratch/antruong/Middlebury/test (speed)/depth/0030.png')
 
 
 ibr = IBR()
