@@ -76,11 +76,12 @@ class Scene:
             translation, rotation = get_rotation_translation(self.extrinsics[i])
 
             scene = CanvasView(90, vertices, faces, vertex_colors, translation, rotation)
-            
-            start = time.time()
-            render = scene.render()[:, ::-1, :]
-            print('render-time: ', time.time() - start)
-            cv2.imshow('scene', render)
-            cv2.waitKey()
 
-            exit()
+            render = scene.render()[:, ::-1, :]
+            self.mesh.append(render)
+
+    def novel_view_ibr(self):
+        pass
+
+    def novel_view_network(self):
+        pass
