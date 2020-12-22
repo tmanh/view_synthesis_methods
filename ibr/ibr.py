@@ -1,4 +1,5 @@
-from utils import Superpixel
+from superpixel.handler import Superpixel
+# from utils import Warper
 
 
 class IBR:

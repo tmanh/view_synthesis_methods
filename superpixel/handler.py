@@ -2,8 +2,7 @@ from fast_slic import Slic
 from fast_slic.avx2 import SlicAvx2
 from skimage.segmentation import slic as skislic
 
-from gpu_utils import GpuSlic
-    
+from superpixel.gpu import GpuSlic
 
 
 class Superpixel:

@@ -1,13 +1,17 @@
-import cv2
-import time
-
 from ibr.ibr import IBR
-
-depth = cv2.imread('/ipi/scratch/antruong/Middlebury/test (speed)/depth/0030.png')
+from ibr.scene import Scene
 
 
 ibr = IBR()
 
-start = time.time()
-ibr.superpixel(depth)
-print('Elapsed: ', time.time() - start)
+data_dir = '/Users/anhtruong/Workspace/view-synthesis-methods/data'
+scene_name = '0001'
+n_views = 5
+
+scene = Scene()
+scene.read_data(data_dir, scene_name, n_views)
+# scene.add_noise()
+# scene.visualize()
+scene.denoise()
+scene.visualize()
+scene.create_mesh()
