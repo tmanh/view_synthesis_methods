@@ -1,8 +1,6 @@
 import os
 import cv2
 
-import time
-
 import numpy as np
 
 from noise.model import compute_edges, add_noise
@@ -28,6 +26,14 @@ class Scene:
 
         self.intrinsic = np.array([[300, 0, 300], [0, 300, 300], [0, 0, 1]])
 
+    def set_data(self, images, depths, extrinsics, intrinsic):
+        for i in range(len(images)):
+            self.images.append(images[i])
+            self.depths.append(depths[i])
+            self.extrinsics.append(extrinsics[i])
+
+        self.intrinsic = intrinsic
+
     def read_data(self, data_dir, scene_name, n_views):
         for i in range(n_views):
             img = cv2.imread(os.path.join(data_dir, scene_name + '_i_{}.png'.format(i)))
@@ -46,6 +52,9 @@ class Scene:
             norm_depth = (self.depths[i] - self.depths[i].min()) / (self.depths[i].max() - self.depths[i].min()) * 255
             norm_depth = norm_depth.astype(np.uint8)
             cv2.imshow('depth_{}'.format(i), norm_depth)
+
+            if i < len(self.mesh):
+                cv2.imshow('meshed_{}'.format(i), self.mesh[i])
 
         cv2.waitKey()
     
@@ -79,9 +88,3 @@ class Scene:
 
             render = scene.render()[:, ::-1, :]
             self.mesh.append(render)
-
-    def novel_view_ibr(self):
-        pass
-
-    def novel_view_network(self):
-        pass
