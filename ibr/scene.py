@@ -72,7 +72,7 @@ class Scene:
             # self.depths[i] = bilateral[-1]
             self.depths[i] = joint_bilateral_filter(self.depths[i], self.images[i])
 
-    def create_mesh(self):
+    def create_mesh(self, extrinsic):
         for i in range(len(self.images)):
             edges = compute_edges(self.depths[i])
 
@@ -85,6 +85,9 @@ class Scene:
             translation, rotation = get_rotation_translation(self.extrinsics[i])
 
             scene = CanvasView(90, vertices, faces, vertex_colors, translation, rotation)
+
+            translation, rotation = get_rotation_translation(extrinsic)
+            scene.transform(translation, rotation)
 
             render = scene.render()[:, ::-1, :]
             self.mesh.append(render)

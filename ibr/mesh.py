@@ -4,24 +4,6 @@ from vispy import scene, io
 from vispy.scene import visuals
 from vispy.visuals.filters import Alpha
 
-
-class Mesh:
-    def __init__(self, vertices, faces, vertex_colors):
-        super().__init__()
-
-        self.vertices = vertices
-        self.faces = faces
-        self.vertex_colors = vertex_colors
-
-    def apply_transform(self, matrix):
-        # check to see if we've been passed an identity matrix
-        identity = np.abs(matrix - np.eye(matrix.shape[0])).max()
-        if identity < 1e-8:
-            return
-
-        self.vertices = np.dot(matrix, self.vertices.T).T
-
-
 class CanvasView():
     def __init__(self, fov, verts, faces, colors, translation, rotation):
         self.canvas = scene.SceneCanvas(bgcolor='black', size=(600, 600))
@@ -46,6 +28,13 @@ class CanvasView():
 
     def rotate(self, axis=[1,0,0], angle=0):
         self.tr.rotate(axis=axis, angle=angle)
+
+    def transform(self, translation, rotation):
+        self.translate(translation)
+
+        self.rotate(axis=[1, 0, 0], angle=rotation[0])
+        self.rotate(axis=[0, 1, 0], angle=rotation[1])
+        self.rotate(axis=[0, 0, 1], angle=rotation[2])
 
     def view_changed(self):
         self.view.camera.view_changed()
