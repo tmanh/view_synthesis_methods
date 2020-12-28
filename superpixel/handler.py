@@ -2,7 +2,7 @@ from fast_slic import Slic
 from fast_slic.avx2 import SlicAvx2
 from skimage.segmentation import slic as skislic
 
-from superpixel.gpu import GpuSlic
+# from superpixel.gpu import GpuSlic
 
 
 class Superpixel:
@@ -15,8 +15,8 @@ class Superpixel:
             self.generator = SkiSlic(cfg)
         elif mode == 'SlicAvx2':
             self.generator = FastSlicAvx2(cfg)
-        elif mode == 'GpuSlic':
-            self.generator = GpuSlic(cfg)
+        # elif mode == 'GpuSlic':
+        #     self.generator = GpuSlic(cfg)
 
     def superpixel(self, image):
         self.generator.superpixel(image)
