@@ -3,15 +3,14 @@ import cv2
 
 import numpy as np
 
-from noise.model import compute_edges, add_noise
-from noise.joint_bilateral import joint_bilateral_filter
-# from noise.sparse_bilateral import sparse_bilateral_filtering
+from ..noise.model import compute_edges, add_noise
+from ..noise.joint_bilateral import joint_bilateral_filter
 
-from ibr.mesh import ViewRenderer
+from ..ibr.mesh import ViewRenderer
 
-from numba_extensions.normal import compute_angles
-from numba_extensions.scene import generate_vertices, generate_faces_from_edges
-from numba_extensions.scene import create_loc_matrix_from_depth, warp, get_rotation_translation
+from ..numba_extensions.normal import compute_angles
+from ..numba_extensions.scene import generate_vertices, generate_faces_from_edges
+from ..numba_extensions.scene import create_loc_matrix_from_depth, warp, get_rotation_translation
 
 
 class Scene:
@@ -31,6 +30,10 @@ class Scene:
         self.intrinsic = np.array([[300, 0, 300], [0, 300, 300], [0, 0, 1]])
 
     def set_data(self, images, depths, extrinsics, intrinsic):
+        self.extrinsics.clear()
+        self.images.clear()
+        self.depths.clear()
+
         for i in range(len(images)):
             self.images.append(images[i])
             self.depths.append(depths[i])
@@ -39,6 +42,10 @@ class Scene:
         self.intrinsic = intrinsic
 
     def read_data(self, data_dir, scene_name, n_views):
+        self.extrinsics.clear()
+        self.images.clear()
+        self.depths.clear()
+
         for i in range(n_views):
             img = cv2.imread(os.path.join(data_dir, scene_name + '_i_{}.png'.format(i)))
             depth = np.load(os.path.join(data_dir, scene_name + '_d_{}.npy'.format(i)))
@@ -82,7 +89,6 @@ class Scene:
 
     def create_mesh(self, extrinsic):
         for i in range(len(self.images)):
-            print(self.depths[i].min(), self.depths[i].max())
             min_depth, max_depth = self.depths[i].min(), self.depths[i].max()
             near = 10 ** np.floor(np.log10(min_depth))
             far = 10 ** np.ceil(np.log10(max_depth))
@@ -95,11 +101,10 @@ class Scene:
             vertices, vertex_colors = generate_vertices(pos_matrix, self.images[i])
             faces = generate_faces_from_edges(edges)
 
-            # translation, rotation = get_rotation_translation(self.extrinsics[i])
             translation, rotation = get_rotation_translation(extrinsic)
 
             renderer = ViewRenderer(self.fov, self.resolution, vertices, faces, vertex_colors, translation, rotation, near, far)
             warp_color, warped_depth = renderer.render()
 
-            self.warp_colors.append(warp_color[:, ::-1, :])
+            self.warp_colors.append(warp_color[:, ::-1, :][:, :, :3])
             self.warp_depths.append(warped_depth[:, ::-1, :])
