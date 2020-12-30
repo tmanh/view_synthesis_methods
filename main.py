@@ -1,7 +1,7 @@
 from ibr.scene import Scene
 
 
-data_dir = '/Users/anhtruong/Workspace/view-synthesis-methods/data'
+data_dir = './data'
 scene_name = '0001'
 n_views = 5
 

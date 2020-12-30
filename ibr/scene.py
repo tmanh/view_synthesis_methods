@@ -35,8 +35,8 @@ class Scene:
         self.depths.clear()
 
         for i in range(len(images)):
-            self.images.append(images[i])
-            self.depths.append(depths[i])
+            self.images.append(images[i].astype(np.uint8))
+            self.depths.append(depths[i].astype(np.float64))
             self.extrinsics.append(extrinsics[i])
 
         self.intrinsic = intrinsic
@@ -104,7 +104,7 @@ class Scene:
             translation, rotation = get_rotation_translation(extrinsic)
 
             renderer = ViewRenderer(self.fov, self.resolution, vertices, faces, vertex_colors, translation, rotation, near, far)
-            warp_color, warped_depth = renderer.render()
+            warp_color, warp_depth = renderer.render()
 
-            self.warp_colors.append(warp_color[:, ::-1, :][:, :, :3])
-            self.warp_depths.append(warped_depth[:, ::-1, :])
+            self.warp_colors.append(warp_color[:, ::-1, :][:, :, :3].copy())
+            self.warp_depths.append(warp_depth[:, ::-1, :].copy())

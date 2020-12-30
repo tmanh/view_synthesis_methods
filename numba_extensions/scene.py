@@ -154,7 +154,7 @@ def warp(pos_matrix, intrinsic, extrinsic):
 
 
 def get_rotation_translation(extrinsic):
-    rotation = spatial.transform.Rotation.from_matrix(extrinsic[:3, :3] @ np.diag([1, -1, -1]))
+    rotation = spatial.transform.Rotation.from_matrix(extrinsic[:3, :3] @ np.diag([-1, -1, -1]))
     rotation = rotation.as_euler('xyz', degrees=True)
 
     translation = np.array([extrinsic[0, 3], extrinsic[1, 3], extrinsic[2, 3]])
